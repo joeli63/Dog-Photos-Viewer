@@ -1,78 +1,70 @@
 <template>
-  <div class="container">
-    <div>
-      <Logo />
-      <h1 class="title">
-        Dog-Photos-Viewer
-      </h1>
-      <div class="links">
-        <a
-          href="https://nuxtjs.org/"
-          target="_blank"
-          rel="noopener noreferrer"
-          class="button--green"
+  <div v-if="!$fetchState.pending" class="text-center">
+    <h1 class="title">Dog-Photos-Viewer</h1>
+    <div class="max-w-6xl mx-auto p-8">
+      <label
+        id="listbox-label"
+        class="block text-sm font-extralight text-gray-700 text-2xl text-left"
+      >
+        Select a breed
+      </label>
+      <div class="mt-1 relative">
+        <select
+          v-model="selectedBreed"
+          @change="onBreedChange"
+          aria-haspopup="listbox"
+          aria-expanded="true"
+          aria-labelledby="listbox-label"
+          class="relative w-full bg-white border border-gray-300 rounded-md shadow-sm pl-3 pr-10 py-2 text-left cursor-default focus:outline-none focus:ring-1 focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
         >
-          Documentation
-        </a>
-        <a
-          href="https://github.com/nuxt/nuxt.js"
-          target="_blank"
-          rel="noopener noreferrer"
-          class="button--grey"
-        >
-          GitHub
-        </a>
+          <option v-for="breed in breeds" :key="breed">{{ breed }}</option>
+        </select>
       </div>
     </div>
+    <div v-if="!isLoading" class="grid max-w-6xl mx-auto p-8">
+      <image-container
+        v-for="image in breedImages"
+        :key="image"
+        :url="image"
+        :title="selectedBreed"
+      ></image-container>
+    </div>
+    <div v-else class="max-w-6xl mx-auto p-8 text-center">Loading...</div>
   </div>
 </template>
 
 <script>
-export default {}
+import ImageContainer from "~/components/ImageContainer.vue";
+
+export default {
+  async fetch() {
+    await this.$store.dispatch("breed/fetch");
+  },
+  components: {
+    ImageContainer,
+  },
+  computed: {
+    breeds() {
+      const breeds = this.$store.getters["breed/breeds"];
+      if (breeds && !this.selectedBreed) this.selectedBreed = breeds[0]
+      return this.$store.getters["breed/breeds"];
+    },
+    breedImages() {
+      return this.$store.getters["breed/breedImages"];
+    },
+  },
+  data() {
+    return {
+      selectedBreed: "",
+      isLoading: false,
+    };
+  },
+  methods: {
+    async onBreedChange() {
+      this.isLoading = true
+      await this.$store.dispatch("breed/fetchImages", this.selectedBreed);
+      this.isLoading = false
+    },
+  },
+};
 </script>
-
-<style>
-/* Sample `apply` at-rules with Tailwind CSS
-.container {
-@apply min-h-screen flex justify-center items-center text-center mx-auto;
-}
-*/
-.container {
-  margin: 0 auto;
-  min-height: 100vh;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  text-align: center;
-}
-
-.title {
-  font-family:
-    'Quicksand',
-    'Source Sans Pro',
-    -apple-system,
-    BlinkMacSystemFont,
-    'Segoe UI',
-    Roboto,
-    'Helvetica Neue',
-    Arial,
-    sans-serif;
-  display: block;
-  font-weight: 300;
-  font-size: 100px;
-  color: #35495e;
-  letter-spacing: 1px;
-}
-
-.subtitle {
-  font-weight: 300;
-  font-size: 42px;
-  color: #526488;
-  word-spacing: 5px;
-  padding-bottom: 15px;
-}
-
-.links {
-  padding-top: 15px;
-}
-</style>
