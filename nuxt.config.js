@@ -69,7 +69,7 @@ export default {
   // Build Configuration: https://go.nuxtjs.dev/config-build
   build: {},
   env: {
-    apiBaseUrl: process.env.API_BASE_URL,
+    apiBaseUrl: process.env.API_BASE_URL || 'https://dog.ceo/api',
     browserBaseUrl: process.env.BROWSER_BASE_URL,
   },
 };
