@@ -21,7 +21,7 @@
         </select>
       </div>
     </div>
-    <div v-if="!isLoading" class="grid max-w-6xl mx-auto p-8">
+    <div v-if="isLoaded" class="grid max-w-6xl mx-auto p-8">
       <image-container
         v-for="image in breedImages"
         :key="image"
@@ -29,12 +29,15 @@
         :title="selectedBreed"
       ></image-container>
     </div>
-    <div v-else class="max-w-6xl mx-auto p-8 text-center">Loading...</div>
+    <div v-else class="max-w-6xl mx-auto p-8 text-center">
+      <loading-bar :loading="isLoaded">Loading...</loading-bar>
+    </div>
   </div>
 </template>
 
 <script>
-import ImageContainer from "~/components/ImageContainer.vue";
+import ImageContainer from "~/components/ImageContainer";
+import LoadingBar from "~/components/LoadingBar"
 
 export default {
   async fetch() {
@@ -42,6 +45,8 @@ export default {
   },
   components: {
     ImageContainer,
+    LoadingBar,
+    LoadingBar
   },
   computed: {
     breeds() {
@@ -56,14 +61,14 @@ export default {
   data() {
     return {
       selectedBreed: "",
-      isLoading: false,
+      isLoaded: true,
     };
   },
   methods: {
     async onBreedChange() {
-      this.isLoading = true
-      await this.$store.dispatch("breed/fetchImages", this.selectedBreed);
       this.isLoading = false
+      await this.$store.dispatch("breed/fetchImages", this.selectedBreed);
+      this.isLoading = true
     },
   },
 };

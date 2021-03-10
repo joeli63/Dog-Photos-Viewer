@@ -4,8 +4,6 @@ export default {
 
   devtools: true,
 
-  loading: false,
-  
   head: {
     title: "Dog-Photos-Viewer",
     meta: [

@@ -8,12 +8,19 @@
       :alt="alt"
       @load="onImgLoad"
     />
-    <div v-show="!isLoaded" class="w-full block rounded-b text-center">Loading...</div>
+    <div v-show="!isLoaded" class="w-full block rounded-b text-center">
+      <loading-bar :loading="!isLoaded"> Loading... </loading-bar>
+    </div>
   </a>
 </template>
 
 <script>
+import LoadingBar from "~/components/LoadingBar"
+
 export default {
+  components: {
+    LoadingBar
+  },
   props: {
     url: {
       type: String,
