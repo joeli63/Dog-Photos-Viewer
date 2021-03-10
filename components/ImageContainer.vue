@@ -1,5 +1,6 @@
 <template>
   <a class="bg-white rounded h-full text-grey-darkest no-underline shadow-md">
+    <transition name="home" mode="out-in"></transition>
     <h1 class="text-3xl p-2">{{ title }}</h1>
     <img
       v-show="isLoaded"
@@ -15,11 +16,15 @@
 </template>
 
 <script>
-import LoadingBar from "~/components/LoadingBar"
+import LoadingBar from "~/components/LoadingBar";
 
 export default {
+  transition: {
+    name: "home",
+    mode: "out-in",
+  },
   components: {
-    LoadingBar
+    LoadingBar,
   },
   props: {
     url: {
@@ -55,5 +60,13 @@ export default {
   color: #35495e;
   font-family: "Quicksand", "Source Sans Pro", -apple-system, BlinkMacSystemFont,
     "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+}
+.image-container-enter-active,
+.image-container-leave-active {
+  transition: opacity 45s;
+}
+.image-container-enter,
+.image-container-leave-active {
+  opacity: 0;
 }
 </style>
