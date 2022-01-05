@@ -8,6 +8,7 @@
       >
         Select a breed
       </label>
+
       <div class="mt-1 relative">
         <select
           v-model="selectedBreed"
@@ -21,7 +22,16 @@
         </select>
       </div>
     </div>
+    
     <div v-if="isLoaded" class="grid max-w-6xl mx-auto p-8">
+      <client-only>
+        <carousel v-bind="options">
+          <slide v-for="i in 5" :key="i" class="img-wrapper">
+            <img :src="i % 2 === 1 ? `/sliders/1.png` : `/sliders/2.jpg`" />
+          </slide>
+        </carousel>
+      </client-only>
+
       <image-container
         v-for="image in breedImages"
         :key="image"
@@ -29,6 +39,7 @@
         :title="selectedBreed"
       ></image-container>
     </div>
+    
     <div v-else class="max-w-6xl mx-auto p-8 text-center">
       <loading-bar :loading="isLoaded">Loading...</loading-bar>
     </div>
@@ -62,6 +73,9 @@ export default {
     return {
       selectedBreed: "",
       isLoaded: true,
+      options: {
+        navigationEnabled: true
+      }
     };
   },
   methods: {
